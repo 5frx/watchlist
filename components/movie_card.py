@@ -37,6 +37,7 @@ def render_search_card(title_id: str):
         if st.button(f"Add '{title_details['original_title']}' to watchlist", key=title_id):
             data_store.add_movies([{
                 "haveWatched": 0,
-                "titleID": title_id
+                "titleID": title_id,
+                "netflix": title_details.get("netflix_link", ""),
             }])
             st.success(f"Added '{title_details['original_title']}' to watchlist!")

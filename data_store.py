@@ -23,13 +23,13 @@ def load_movies():
 def save_movies(movies):
     sheet = get_sheet()
     sheet.clear()
-    rows = [["haveWatched", "titleID"]]
-    rows += [[m["haveWatched"], m["titleID"]] for m in movies]
+    rows = [["haveWatched", "titleID","netflix"]]
+    rows += [[m["haveWatched"], m["titleID"], m.get("netflix", "")] for m in movies]
     sheet.update("A1", rows)  # Single write request instead of one per row
     
 def add_movies(movies_list):
     sheet = get_sheet()
-    rows = [[m["haveWatched"], m["titleID"]] for m in movies_list]
+    rows = [[m["haveWatched"], m["titleID"], m.get("netflix", "")] for m in movies_list]
     sheet.append_rows(rows)  # Single request for all rows
 
 def remove_movies(movies_list):
