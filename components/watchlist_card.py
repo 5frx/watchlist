@@ -38,8 +38,10 @@ def render_watchlist_card(movie: dict, title_details: dict, movies: list):
         st.write(f"Release Year: {title_details.get('release_date', 'N/A')}")
         st.write(f"Runtime: {title_details.get('runtime', 'N/A')} minutes")
         # Display Netflix availability if available
-        if title_details.get("netflix_link"):
-            st.markdown(f"**Available on Netflix:** [Watch here]({title_details['netflix_link']})")
+        if movie.get("netflix"):
+            st.write(f"**Available on Netflix:** [Watch here]({movie['netflix']})")
+        else:
+            st.write("Not available on Netflix.")
 
     with col3:
         # Watched checkbox — saves immediately on toggle

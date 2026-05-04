@@ -123,12 +123,6 @@ def getTitleDetails(titleID):
     resp = TMDB_SESSION.get(URL_BASE + f"movie/{titleID}", params=params)
     resp.raise_for_status()
 
-    # Add Netflix information to the details response
-
-    netflix_link = getNetflixLink(titleID)
-    if netflix_link:
-        resp.json()["netflix_link"] = netflix_link
-
     return resp.json()
 
 # ----------------------------------------
@@ -142,10 +136,24 @@ def getStreamingAvailability(TMDBTitleID):
     params = {
         "country": "th"
     }
-    resp = STREAMING_AVAILABILITY_SESSION.get(f"https://api.movieofthenight.com/v4/shows/movie/{TMDBTitleID}", headers=headers, params=params, timeout=10)
-    resp.raise_for_status()
-    #RETURN ONLY streamingOptions
-    return resp.json().get("streamingOptions", {})['th'][0] if resp.json().get("streamingOptions", {}).get('th') else None
+    try:
+        resp = STREAMING_AVAILABILITY_SESSION.get(f"https://api.movieofthenight.com/v4/shows/movie/{TMDBTitleID}", headers=headers, params=params, timeout=10)
+        resp.raise_for_status()
+        #RETURN ONLY streamingOptions
+        return resp.json().get("streamingOptions", {})['th'][0] if resp.json().get("streamingOptions", {}).get('th') else None
+    except requests.RequestException as e:
+        if resp.status_code == 404:
+            print(f"No streaming availability found for TMDB ID {TMDBTitleID}.")
+        if resp.status_code == 401:
+            print(f"Unauthorized access to streaming availability API for TMDB ID {TMDBTitleID}. Check API key.")
+        if resp.status_code == 429:
+            print(f"Rate limit exceeded when fetching streaming availability for TMDB ID {TMDBTitleID}. Consider adding retries or backoff.")
+        else:
+            print(f"Error fetching streaming availability for TMDB ID {TMDBTitleID}: {e}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error fetching streaming availability for TMDB ID {TMDBTitleID}: {e}")
+        return None
 
 def getNetflixLink(TMDBTitleID):
     availability = getStreamingAvailability(TMDBTitleID)

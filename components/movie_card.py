@@ -22,8 +22,9 @@ def render_search_card(title_id: str):
         title_id: The unique ID of the title to display.
     """
     title_details = api_client.getTitleDetails(title_id)
-
-    col1, col2 = st.columns([1, 3])
+    print(f"Fetched details for titleID {title_id}: {title_details}")  # Debug log
+    netflix_link = api_client.getNetflixLink(title_id)
+    col1, col2, col3 = st.columns([1, 3, 1])
 
     with col1:
         # Display poster if available, otherwise show a placeholder message
@@ -38,9 +39,12 @@ def render_search_card(title_id: str):
             data_store.add_movies([{
                 "haveWatched": 0,
                 "titleID": title_id,
-                "netflix": title_details.get("netflix_link", ""),
+                "netflix": netflix_link if netflix_link else "",
             }])
             st.success(f"Added '{title_details['original_title']}' to watchlist!")
         # Display Netflix availability if available
-        if title_details.get("netflix_link"):
-            st.markdown(f"**Available on Netflix:** [Watch here]({title_details['netflix_link']})")
+    with col3:
+        if netflix_link:
+            st.write(f"**Available on Netflix:** [Watch here]({netflix_link})")
+        else:
+            st.write("Not available on Netflix.")

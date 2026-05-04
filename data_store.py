@@ -4,6 +4,7 @@ import json
 import gspread
 from google.oauth2.service_account import Credentials
 import streamlit as st
+import api_client
 
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets",
           "https://www.googleapis.com/auth/drive"]
@@ -65,10 +66,12 @@ def remove_movies(movies_list):
 
 # def update_movie_ids(movies):
 #     for movie in movies:
-#         title_ids = api_client.getTitleIDs(movie["title"])
-#         if title_ids:
-#             movie["titleID"] = title_ids[0]  # Use the first ID found
+#         title_id = movie.get("titleID")
+#         if title_id:
+#             netflix_link = api_client.getNetflixLink(title_id)
+#             movie["netflix"] = netflix_link if netflix_link else ""
 #     save_movies(movies)
 #     print("Update complete: Movie IDs have been updated.")
 
 # update_movie_ids(load_movies())  # Ensure all movies have their titleID updated
+
