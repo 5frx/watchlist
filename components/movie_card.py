@@ -41,3 +41,6 @@ def render_search_card(title_id: str):
                 "netflix": title_details.get("netflix_link", ""),
             }])
             st.success(f"Added '{title_details['original_title']}' to watchlist!")
+        # Display Netflix availability if available
+        if title_details.get("netflix_link"):
+            st.markdown(f"**Available on Netflix:** [Watch here]({title_details['netflix_link']})")
