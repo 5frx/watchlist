@@ -149,6 +149,10 @@ def getStreamingAvailability(TMDBTitleID):
 
 def getNetflixLink(TMDBTitleID):
     availability = getStreamingAvailability(TMDBTitleID)
+
+    if not availability:
+        return None
+
     netflix_info = availability['service'] if availability['service']['id'] == 'netflix' else None
     if netflix_info:
         return availability['link']
